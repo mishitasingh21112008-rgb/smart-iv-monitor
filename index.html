@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IV Monitor</title>
+
+    <style>
+        
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        background: #f4f7f6;
+        margin: 0;
+        padding: 30px;
+        color: #1f2937;
+    }
+
+    .header {
+        background: #14532d;
+        color: white;
+        padding: 25px;
+        border-radius: 14px;
+        margin-bottom: 25px;
+    }
+
+    .header h1 {
+        margin: 0 0 10px;
+    }
+
+    .header p {
+        margin: 0;
+        color: #dcfce7;
+    }
+
+    .dashboard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+    }
+
+    .card {
+        background: white;
+        padding: 22px;
+        border-radius: 14px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.04);
+    }
+
+    .card h3 {
+        margin-top: 0;
+        color: #374151;
+    }
+
+    .value {
+        font-size: 30px;
+        font-weight: bold;
+        color: #166534;
+    }
+
+    button {
+        padding: 11px 14px;
+        margin: 5px 3px 0 0;
+        background: #166534;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    button:hover {
+        background: #14532d;
+    }
+
+    .status {
+        display: inline-block;
+        background: #dcfce7;
+        color: #166534;
+        padding: 7px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+    }
+
+    #alert {
+        line-height: 1.6;
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 600px) {
+        body {
+            padding: 15px;
+        }
+
+        .header {
+            padding: 20px;
+        }
+    }
+
+    .alert-normal {
+    color: #166534;
+    background: #dcfce7;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.alert-warning {
+    color: #92400e;
+    background: #fef3c7;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.alert-critical {
+    color: #991b1b;
+    background: #fee2e2;
+    padding: 10px;
+    border-radius: 8px;
+}
+.progress-track {
+    width: 100%;
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 15px 0;
+}
+
+.progress-fill {
+    width: 65%;
+    height: 100%;
+    background: #16a34a;
+    border-radius: 10px;
+    transition: width 0.3s ease, background 0.3s ease;
+}
+</style>
+
+         
+    
+</head>
+
+<body>
+
+    <div class="header">
+    <h1>IV Drip Monitor</h1>
+    <p>Smart IV Infusion Monitoring System</p>
+    <br>
+    <span class="status">● Connected (Demo)</span>
+    </div>
+
+<div class="dashboard"> 
+    <div class="card">
+        <h3>Drip Rate</h3>
+        <p class="value" id="rate">20 drops/min</p>
+        <button onclick="changeRate()">Update Drip Rate</button>
+        <button onclick="stopFlow()">Simulate Stopped Flow</button>
+        <button onclick="resumeFlow()">Resume Flow</button>
+    </div>
+
+
+    <div class="card">
+    <h3>Fluid Remaining</h3>
+
+    <p class="value" id="fluid">65%</p>
+
+    <div class="progress-track">
+        <div id="fluidBar" class="progress-fill"></div>
+    </div>
+
+    <button onclick="useFluid()">Simulate Fluid Usage</button>
+    </div>
+
+    <div class="card">
+        <h3>System Alerts</h3>
+        <p id="alert" class="alert-normal">No alerts (Demo)</p>
+
+        <button onclick="showAlert()">
+            Test Alert
+        </button>
+    </div>
+
+<script>
+    function setAlert(message, type) {
+    let alertBox = document.getElementById("alert");
+
+    alertBox.innerText = message;
+    alertBox.className = type;
+    }
+
+    function showAlert() {
+    if (fluid === 0) {
+        setAlert("CRITICAL: No fluid remaining! (Demo)", "alert-critical");
+    } else if (fluid <= 20) {
+        setAlert("WARNING: Low fluid remaining! (Demo)", "alert-warning");
+    } else {
+        setAlert("No alerts. Fluid level normal (Demo)", "alert-normal");
+    }
+}
+    function stopFlow() {
+    rate = 0;
+
+    document.getElementById("rate").innerText =
+        "0 drops/min";
+
+    setAlert("WARNING: Flow stopped! (Demo)", "alert-critical");
+}
+
+function resumeFlow() {
+    rate = 20;
+
+    document.getElementById("rate").innerText =
+        rate + " drops/min";
+
+    if (fluid === 0) {
+    setAlert("CRITICAL: No fluid remaining! (Demo)", "alert-critical");
+} else if (fluid <= 20) {
+    setAlert("WARNING: Low fluid remaining! (Demo)", "alert-warning");
+} else {
+    setAlert("Flow normal (Demo)", "alert-normal");
+}
+}
+
+    
+let rate = 20;
+
+function changeRate() {
+    if (rate > 0) {
+        rate = rate + 1;
+
+        document.getElementById("rate").innerText =
+            rate + " drops/min";
+    }
+}
+
+
+
+let fluid = 65;
+
+function useFluid() {
+    if (fluid > 0) {
+    fluid = Math.max(0, fluid - 5);
+    }
+
+    document.getElementById("fluid").innerText =
+        fluid + "%";
+    document.getElementById("fluidBar").style.width =
+    fluid + "%";
+    let fluidBar = document.getElementById("fluidBar");
+
+if (fluid === 0) {
+    fluidBar.style.background = "#dc2626";
+} else if (fluid <= 20) {
+    fluidBar.style.background = "#f59e0b";
+} else {
+    fluidBar.style.background = "#16a34a";
+}
+
+    if (fluid === 0) {
+    setAlert("CRITICAL: No fluid remaining! (Demo)", "alert-critical");
+} else if (fluid <= 20) {
+    setAlert("WARNING: Low fluid remaining! (Demo)", "alert-warning");
+} else {
+    setAlert("Fluid level normal (Demo)", "alert-normal");
+}
+}
+
+
+
+</script>
+
+</body>
+</html>
